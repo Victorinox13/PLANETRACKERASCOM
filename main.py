@@ -2,41 +2,36 @@ import win32com.client
 import time
 import tkinter as tk
 from datetime import datetime, timezone
-from astropy.coordinates import AltAz, EarthLocation, get_sun, get_body, SkyCoord
+
+from astropy.coordinates import AltAz, EarthLocation
 from astropy.time import Time
-from astropy.coordinates.name_resolve import NameResolveError
+ 
 import SideFunctions.eqMath as eq
 import SideFunctions.UserSettings as UsS
+import SideFunctions.drawNightSky as ns
 
 # BASIS INSTELLINGEN
 target_ra = 0.00
 target_dec = 0.00
 hasClicked = False
 
+# Configurable Alt-Az ranges
+MIN_ALT = 10  # Minimum altitude
+MAX_ALT = 80  # Maximum altitude
+MIN_AZ = 130  # Minimum azimuth
+MAX_AZ = 200  # Maximum azimuth
+
 # Function to generate visible objects
 
 
-# Function to draw stars and planets on the canvas
-def draw_objects_on_canvas(objects):
-    canvas.delete("object")  # Clear previous objects
-    width = canvas.winfo_width()
-    height = canvas.winfo_height()
-
-    for obj_name, alt, az in objects:
-        x = int((az - 130) / (200 - 130) * width)
-        y = int(height - (alt - 10) / (80 - 10) * height)
-        canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill="white", tags="object")
-        canvas.create_text(x + 10, y, text=obj_name, fill="white", font=("Arial", 8), tags="object")
-
-# Update visible objects dynamically
 def update_visible_objects():
-    location = EarthLocation(lat=UsS.LATITUDE, lon=UsS.LONGITUDE, height=UsS.ELEVATION)
-    time = Time(datetime.now(timezone.utc))
-    visible_objects = get_visible_objects(location, time, 10, 80, 130, 200)
-    draw_objects_on_canvas(visible_objects)
-    root.after(5000, update_visible_objects)  # Refresh every 5 seconds
+    location = EarthLocation(UsS.LONGITUDE, UsS.LATITUDE, UsS.ELEVATION)
+    time = Time(datetime.now())
 
-# Update the telescope position on the canvas
+    visible_objects = ns.get_visible_objects(location, time, MIN_ALT, MAX_ALT, MIN_AZ, MAX_AZ)
+    ns.draw_objects_on_canvas(visible_objects, canvas, MIN_AZ, MAX_AZ, MIN_ALT, MAX_ALT)
+    root.after(1000, update_visible_objects)  # Refresh every 5 seconds
+
 def update_telescope_position():
     if telescope.Connected:
         # Check if slewing or target position is not reached
@@ -53,8 +48,8 @@ def update_telescope_position():
             # Map Alt-Az to canvas coordinates
             width = canvas.winfo_width()
             height = canvas.winfo_height()
-            x = int((current_az - 130) / (200 - 130) * width)
-            y = int(height - (current_alt - 10) / (80 - 10) * height)
+            x = int((current_az - MIN_AZ) / (MAX_AZ - MIN_AZ) * width)
+            y = int(height - (current_alt - MIN_ALT) / (MAX_ALT - MIN_ALT) * height)
             canvas.coords(telescope_circle, x - 5, y - 5, x + 5, y + 5)
             telescope_position_text.set(f"Telescope Position -> Alt: {current_alt:.2f}, Az: {current_az:.2f}")
         elif hasClicked == True:
@@ -69,8 +64,8 @@ def update_telescope_position():
         # Map Alt-Az to canvas coordinates
         width = canvas.winfo_width()
         height = canvas.winfo_height()
-        x = int((current_az - 130) / (200 - 130) * width)
-        y = int(height - (current_alt - 10) / (80 - 10) * height)
+        x = int((current_az - MIN_AZ) / (MAX_AZ - MIN_AZ) * width)
+        y = int(height - (current_alt - MIN_ALT) / (MAX_ALT - MIN_ALT) * height)
         canvas.coords(telescope_circle, x - 5, y - 5, x + 5, y + 5)
         telescope_position_text.set(f"Telescope Position -> Alt: {current_alt:.2f}, Az: {current_az:.2f}")
 
@@ -86,11 +81,11 @@ def on_click(event):
     width = canvas.winfo_width()
     height = canvas.winfo_height()
 
-    # Map x-coordinate to azimuth (130 to 200 degrees)
-    azimuth = 130 + (event.x / width) * (200 - 130)
+    # Map x-coordinate to azimuth
+    azimuth = MIN_AZ + (event.x / width) * (MAX_AZ - MIN_AZ)
 
-    # Map y-coordinate to altitude (10 to 60 degrees, inverted)
-    altitude = 80 - (event.y / height) * (80 - 10)
+    # Map y-coordinate to altitude
+    altitude = MAX_ALT - (event.y / height) * (MAX_ALT - MIN_ALT)
 
     # Display clicked coordinates
     clicked_position_text.set(f"Clicked Position -> Alt: {altitude:.2f}, Az: {azimuth:.2f}")
@@ -129,10 +124,10 @@ if __name__ == "__main__":
 
     # Bind mouse clicks to the window
     canvas.bind("<Button-1>", on_click)
-
+    print("start map")
     # Start updating the visible objects
     update_visible_objects()
-
+    print("map started")
     # Start updating the telescope position
     root.after(100, update_telescope_position)
 
