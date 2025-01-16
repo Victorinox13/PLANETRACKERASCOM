@@ -12,6 +12,8 @@ import SideFunctions.eqMath as eq
 target_alt = 0.0 
 target_az = 0.0
 
+
+
 if __name__ == "__main__":
 
     telescope = win32com.client.Dispatch("ASCOM.BRESSER.Telescope")

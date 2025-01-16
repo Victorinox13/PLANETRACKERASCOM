@@ -18,15 +18,15 @@ hasClicked = False
 # Configurable Alt-Az ranges
 MIN_ALT = 10  # Minimum altitude
 MAX_ALT = 80  # Maximum altitude
-MIN_AZ = 130  # Minimum azimuth
-MAX_AZ = 200  # Maximum azimuth
+MIN_AZ = 150  # Minimum azimuth
+MAX_AZ = 225  # Maximum azimuth
 
 # Function to generate visible objects
 
 
 def update_visible_objects():
     location = EarthLocation(UsS.LONGITUDE, UsS.LATITUDE, UsS.ELEVATION)
-    time = Time(datetime.now())
+    time = Time(datetime.now(timezone.utc))
 
     visible_objects = ns.get_visible_objects(location, time, MIN_ALT, MAX_ALT, MIN_AZ, MAX_AZ)
     ns.draw_objects_on_canvas(visible_objects, canvas, MIN_AZ, MAX_AZ, MIN_ALT, MAX_ALT)
