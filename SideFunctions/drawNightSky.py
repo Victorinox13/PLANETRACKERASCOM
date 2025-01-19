@@ -1,6 +1,6 @@
-from astropy.coordinates import AltAz, EarthLocation, get_sun, get_body, SkyCoord
-from astropy.time import Time
-from astropy.coordinates.name_resolve import NameResolveError
+from astropy.coordinates import AltAz, EarthLocation, get_sun, get_body, SkyCoord # type: ignore
+from astropy.time import Time# type: ignore
+from astropy.coordinates.name_resolve import NameResolveError# type: ignore
 
 from datetime import datetime, timezone
 
@@ -53,5 +53,5 @@ def draw_objects_on_canvas(objects, canvas, MIN_AZ, MAX_AZ, MIN_ALT, MAX_ALT):
     for obj_name, alt, az in objects:
         x = int((az - MIN_AZ) / (MAX_AZ - MIN_AZ) * width)
         y = int(height - (alt - MIN_ALT) / (MAX_ALT - MIN_ALT) * height)
-        canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill="white", tags="object")
-        canvas.create_text(x + 10, y, text=obj_name, fill="white", font=("Arial", 8), tags="object")
+        canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="white", tags=f"object-{obj_name}")
+        canvas.create_text(x, y, text=obj_name, fill="white", font=("Arial", 5), tags="object")

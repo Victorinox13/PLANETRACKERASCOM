@@ -17,7 +17,7 @@ hasClicked = False
 
 # Configurable Alt-Az ranges
 MIN_ALT = 10  # Minimum altitude
-MAX_ALT = 80  # Maximum altitude
+MAX_ALT = 60  # Maximum altitude
 MIN_AZ = 150  # Minimum azimuth
 MAX_AZ = 225  # Maximum azimuth
 
@@ -70,7 +70,7 @@ def update_telescope_position():
         telescope_position_text.set(f"Telescope Position -> Alt: {current_alt:.2f}, Az: {current_az:.2f}")
 
     # Schedule the next update
-    root.after(10, update_telescope_position)
+    root.after(100, update_telescope_position)
 
 # Function to handle mouse clicks in the window
 def on_click(event):
@@ -97,15 +97,19 @@ def on_click(event):
     telescope.SlewToCoordinates(target_ra, target_dec)
     print("Telescope slewing to target.")
 
+
 if __name__ == "__main__":
     # Connect to the telescope
     telescope = win32com.client.Dispatch("ASCOM.BRESSER.Telescope")
     telescope.Connected = True
 
-    # Create the GUI window
     root = tk.Tk()
     root.title("Telescope Control")
-    root.geometry("600x400")  # Set window size
+    #root.attributes('-fullscreen', True)  # Enable full-screen mode
+    root.geometry("1000x500")
+    
+
+
 
     # Create the canvas for visualization
     canvas = tk.Canvas(root, bg="black")
@@ -130,6 +134,8 @@ if __name__ == "__main__":
     print("map started")
     # Start updating the telescope position
     root.after(100, update_telescope_position)
+    telescope.TrackingRate = 3  # Set to "Custom"
+    telescope.SetCustomRate(0,5, 0)
 
     # Run the GUI event loop
     root.mainloop()

@@ -9,8 +9,8 @@ import SideFunctions.eqMath as eq
 
 
 
-target_alt = 0.0 
-target_az = 0.0
+target_alt = 45.0 
+target_az = 200.0
 
 
 

@@ -7,8 +7,15 @@ def connect_telescope():
 
 def read_telescope_data(telescope):
     attributes = [
-        "RightAscension", "Declination", "Altitude", "Azimuth", "Tracking", "SiderealTime",
-        "CanSlew", "CanSetTracking", "CanPark", "CanSync", "CanSetGuideRates", "SiteLongitude", "UTCDate"
+        # Common properties
+        
+        "RightAscension","CanSlewAltAzAsync", "Declination", "Altitude", "Azimuth", "Tracking", "SiderealTime",
+        "CanSlew", "CanSetTracking", "CanPark", "CanSync", "CanSetGuideRates", "SiteLongitude", "UTCDate",
+        # Additional properties
+        "SiteLatitude", "SiteElevation", "RightAscensionRate", "DeclinationRate", "TrackingRate", 
+        "GuideRateRightAscension", "GuideRateDeclination", "CanSetRightAscensionRate", "CanSetDeclinationRate",
+        "CanSetTrackingRates", "CanMoveAxis", "FocalLength", "ApertureDiameter", "ApertureArea",
+        "DoesRefraction", "EquatorialSystem", "InterfaceVersion", "Name", "Description"
     ]
 
     print("Telescope Data:")
@@ -25,4 +32,5 @@ def disconnect_telescope(telescope):
 if __name__ == "__main__":
     telescope = connect_telescope()
     read_telescope_data(telescope)
+    
     disconnect_telescope(telescope)
