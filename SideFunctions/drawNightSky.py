@@ -13,7 +13,7 @@ def get_visible_objects(location, time, alt_min, alt_max, az_min, az_max):
         if alt_min <= sun.alt.degree <= alt_max and az_min <= sun.az.degree <= az_max:
             objects.append(("Sun", sun.alt.degree, sun.az.degree))
 
-        solarsys = ["mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune", "moon"]
+        solarsys = ["mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune", "moon", "sun"]
        
         for object_name in solarsys:
             try:

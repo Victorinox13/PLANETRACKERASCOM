@@ -9,6 +9,7 @@ from astropy.time import Time
 import SideFunctions.eqMath as eq
 import SideFunctions.UserSettings as UsS
 import SideFunctions.drawNightSky as ns
+import ScndSpeedDemo as Ss
 
 # BASIS INSTELLINGEN
 target_ra = 0.00
@@ -43,7 +44,7 @@ def update_telescope_position():
             # Get the current RA/Dec
             current_ra = telescope.RightAscension
             current_dec = telescope.Declination
-            current_alt, current_az = eq.convert_ra_dec_to_alt_az(current_ra, current_dec, UsS.LATITUDE, UsS.LONGITUDE, UsS.ELEVATION)
+            current_alt, current_az = eq.convert_ra_dec_to_alt_az(current_ra, current_dec)
 
             # Map Alt-Az to canvas coordinates
             width = canvas.winfo_width()
@@ -59,7 +60,7 @@ def update_telescope_position():
 
         current_ra = telescope.RightAscension
         current_dec = telescope.Declination
-        current_alt, current_az = eq.convert_ra_dec_to_alt_az(current_ra, current_dec, UsS.LATITUDE, UsS.LONGITUDE, UsS.ELEVATION)
+        current_alt, current_az = eq.convert_ra_dec_to_alt_az(current_ra, current_dec)
 
         # Map Alt-Az to canvas coordinates
         width = canvas.winfo_width()
@@ -90,11 +91,7 @@ def on_click(event):
     # Display clicked coordinates
     clicked_position_text.set(f"Clicked Position -> Alt: {altitude:.2f}, Az: {azimuth:.2f}")
     print(f"Clicked Alt: {altitude:.2f}, Az: {azimuth:.2f}")
-    target_ra, target_dec = eq.convert_alt_az_to_ra_dec(altitude, azimuth, UsS.LATITUDE, UsS.LONGITUDE, UsS.ELEVATION)
-    print(f"Converted RA: {target_ra} hours, Dec: {target_dec} degrees")
-
-    # Slew the telescope
-    telescope.SlewToCoordinates(target_ra, target_dec)
+    Ss.SlewToAzAlt(altitude, azimuth, telescope, False)
     print("Telescope slewing to target.")
 
 
@@ -134,8 +131,6 @@ if __name__ == "__main__":
     print("map started")
     # Start updating the telescope position
     root.after(100, update_telescope_position)
-    telescope.TrackingRate = 3  # Set to "Custom"
-    telescope.SetCustomRate(0,5, 0)
 
     # Run the GUI event loop
     root.mainloop()

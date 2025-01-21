@@ -30,22 +30,37 @@ def SlewToAzAlt(alt, az, telescope, stop):
         telescope.AbortSlew()
 
 def SlewToAzAltOneSpeed(alt, az, telescope):
-    #250 en
+
     telAlt, telAz = eq.convert_ra_dec_to_alt_az(telescope.RightAscension, telescope.Declination)
-
-    if telAz < az:  ra, dec = eq.convert_alt_az_to_ra_dec(alt, az + 10)
-    else : ra, dec = eq.convert_alt_az_to_ra_dec(alt, az - 10)
-    telescope.SlewToCoordinates(ra, dec)
-    # 200 - 210 = -10 
-    #240 -  2
-    while (round(az - telAz) != 0 and round(az - telAz) != 1 and round(az - telAz) != -1):
+    
+    if telAz > az:
+        
+        print('slewing LEFT.')
+        ra, dec = eq.convert_alt_az_to_ra_dec(alt, az - 10)
+        time.sleep(1)    
+        telescope.SlewToCoordinates(ra, dec)
+        while (az - (telAz-1)) < -1:
+            
             telAlt, telAz = eq.convert_ra_dec_to_alt_az(telescope.RightAscension, telescope.Declination)
-            print(f"Inp Alt: {telAlt}, Az: {telAz}")
-            print(round(az - telAz))
-            time.sleep(1)
+            #print(f"Still have to do: {round(az - telAz)}, Current Az: {telAz}, Target Az: {telAz}, {(az - (telAz-1.5))}")    
+        print('Abort slewing.')
+        telescope.AbortSlew()
+    else:
+        print('slewing RIGHT.')
+        ra, dec = eq.convert_alt_az_to_ra_dec(alt, az + 10)
+        time.sleep(1)    
+        telescope.SlewToCoordinates(ra, dec)
+        while (az - (telAz+1)) > 1:
+            telAlt, telAz = eq.convert_ra_dec_to_alt_az(telescope.RightAscension, telescope.Declination)
+            #print(f"still have to do: {round(az - telAz)}, Az: {telAz}, Az: {telAz + 2}, {(az - (telAz+2))}")
 
-    print('abort')
-    telescope.AbortSlew()
+        print('abort')
+        telescope.AbortSlew()  
+
+      
+          
+
+   
 
 
 
@@ -57,8 +72,15 @@ if __name__ == "__main__":
 
     telescope = win32com.client.Dispatch("ASCOM.BRESSER.Telescope")
     telescope.Connected = True
+
+    telAlt, telAz = eq.convert_ra_dec_to_alt_az(telescope.RightAscension, telescope.Declination)
+    time.sleep(2)
+    telAlt, telAz = eq.convert_ra_dec_to_alt_az(telescope.RightAscension, telescope.Declination)
     
-    SlewToAzAltOneSpeed(45, 200, telescope)
-    #SlewToAzAlt(45, 200, telescope, True)
+    if telAz >= 210: #THIS IS FOR TESTING
+     SlewToAzAltOneSpeed(45, 200, telescope)
+    if telAz < 210: #THIS IS FOR TESTING
+     SlewToAzAltOneSpeed(45, 220, telescope)
+   
     
         
