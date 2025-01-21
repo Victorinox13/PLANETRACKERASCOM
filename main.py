@@ -19,8 +19,8 @@ hasClicked = False
 # Configurable Alt-Az ranges
 MIN_ALT = 10  # Minimum altitude
 MAX_ALT = 60  # Maximum altitude
-MIN_AZ = 150  # Minimum azimuth
-MAX_AZ = 225  # Maximum azimuth
+MIN_AZ = 180  # Minimum azimuth
+MAX_AZ = 250  # Maximum azimuth
 
 # Function to generate visible objects
 
