@@ -1,7 +1,10 @@
 import win32com.client
 
+#This program is used to see what capabilities the telescope has.
+TelescopeDriver = "ASCOM.SynScanMobile.Telescope"
+
 def connect_telescope():
-    telescope = win32com.client.Dispatch("ASCOM.BRESSER.Telescope")
+    telescope = win32com.client.Dispatch(TelescopeDriver)
     telescope.Connected = True
     return telescope
 

@@ -97,7 +97,7 @@ def on_click(event):
 
 if __name__ == "__main__":
     # Connect to the telescope
-    telescope = win32com.client.Dispatch("ASCOM.BRESSER.Telescope")
+    telescope = win32com.client.Dispatch("ASCOM.SynScanMobile.Telescope")
     telescope.Connected = True
 
     root = tk.Tk()

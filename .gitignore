@@ -1,6 +1,0 @@
-# Ignore a specific folder
-# Ignore Python cache
-__pycache__/
-*.py[cod]
-
-

@@ -12,5 +12,5 @@ if __name__ == "__main__":
 
     telescope = win32com.client.Dispatch("ASCOM.BRESSER.Telescope")
     telescope.Connected = True
-    Ss.SlewToAzAlt(40, 240, telescope, True)
+    Ss.SlewToAzAlt(40, 220, telescope, True)
     

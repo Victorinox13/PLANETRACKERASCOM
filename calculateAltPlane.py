@@ -3,6 +3,10 @@ import math
 import win32com.client
 import ScndSpeedDemo as Ss
 
+
+#This program is made to calculate the ra dec of a plane in tbe sky.
+
+
 # Your location
 OBSERVER_LAT = 51.28  # Your latitude
 OBSERVER_LON = 4.58   # Your longitude
@@ -94,7 +98,7 @@ def track_aircraft(telescope, aircraft):
 
 def main():
     """Main program loop."""
-    telescope = win32com.client.Dispatch("ASCOM.BRESSER.Telescope")
+    telescope = win32com.client.Dispatch("ASCOM.SynScanMobile.Telescope")
     telescope.Connected = True
 
     while True:
